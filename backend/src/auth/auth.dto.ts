@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { User } from 'src/user/user.entity';
+
+import { User } from '../user/user.entity';
 
 export class LoginDto {
   @ApiProperty({ example: 'admin' })
