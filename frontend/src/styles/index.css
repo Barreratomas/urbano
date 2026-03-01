@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full bg-urbano-background font-sans antialiased text-gray-900;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  .btn:focus-visible {
+    @apply outline-none ring-2 ring-urbano-primary ring-offset-2 ring-offset-white transition-shadow;
+  }
+
+  h1 {
+    @apply text-2xl font-bold tracking-tight;
+  }
+  h2 {
+    @apply text-xl font-bold tracking-tight;
+  }
+  h3 {
+    @apply text-lg font-bold;
+  }
+  a {
+    @apply text-urbano-primary no-underline transition-colors;
+  }
+  a:hover {
+    @apply underline;
+  }
+
+  /* Unit & Shortcut spacing rule */
+  .unit {
+    @apply whitespace-nowrap;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f3f4f6;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c1292e;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d15458;
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background: #db7d80;
+  }
+
+  /* Firefox Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #c1292e #f3f4f6;
+  }
+}
+
+@layer components {
+  .btn-refresh {
+    @apply btn flex gap-2 items-center bg-urbano-primary text-white hover:bg-opacity-90 shadow-sm border-none transition-all;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-urbano-primary rounded-md focus:outline-none text-white font-semibold text-sm transition-all transform;
+    @apply hover:bg-opacity-90;
+  }
+  .btn:active {
+    @apply scale-95;
+  }
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  .btn.danger {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+  .input {
+    @apply w-full rounded-md border border-gray-300 text-sm transition-all focus:border-urbano-primary focus:ring-urbano-primary;
+  }
+  .input:disabled {
+    @apply bg-gray-50 text-gray-500;
+  }
+  .card {
+    @apply p-4 sm:p-6 rounded-xl bg-white border border-gray-200 shadow-sm;
+  }
+  .table-container {
+    @apply border border-gray-200 rounded-xl mt-6 shadow-sm overflow-hidden bg-white;
+  }
+  .table-filter {
+    @apply flex flex-col lg:flex-row gap-4 rounded-xl p-4 shadow-sm border border-gray-200 bg-gray-50;
+  }
+  .sidebar {
+    @apply fixed h-full w-72 p-6 shadow-xl flex flex-col transform -translate-x-72 bg-urbano-white lg:translate-x-0 transition-transform z-30 overflow-y-auto;
+  }
+  .sidebar.show {
+    @apply translate-x-0;
+    transform: translateX(0) !important;
+  }
+}

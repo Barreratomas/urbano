@@ -1,0 +1,47 @@
+services:
+  database:
+    image: postgres:alpine
+    container_name: database
+    restart: always
+    env_file:
+      - ./.env.database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    container_name: backend
+    restart: always
+    build:
+      context: backend
+      dockerfile: dockerfile
+    depends_on:
+      - database
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  frontend:
+    container_name: frontend
+    restart: always
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    depends_on:
+      - database
+
+volumes:
+  postgres_data:

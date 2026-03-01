@@ -1,0 +1,33 @@
+FROM node:18-alpine as build
+
+WORKDIR /app
+
+# Install build tools for bcrypt
+RUN apk add --no-cache python3 make g++
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+RUN yarn build
+
+# Install production dependencies and clean up
+RUN rm -rf node_modules && yarn install --production --frozen-lockfile
+
+#---
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package.json yarn.lock ormconfig.js ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+
+EXPOSE 5000
+
+ENTRYPOINT [ "yarn", "start:prod" ]
