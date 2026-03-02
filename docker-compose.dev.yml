@@ -25,6 +25,8 @@ services:
       - ./backend/.env
     depends_on:
       - database
+      - redis
+      - mailhog
 
   frontend:
     image: node:18-alpine
@@ -45,6 +47,7 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+  
 
   adminer:
     image: adminer
@@ -53,6 +56,19 @@ services:
       - "8080:8080"
     depends_on:
       - database
+
+  redis:
+    image: redis:alpine
+    container_name: redis-dev
+    ports:
+      - "6379:6379"
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog-dev
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # UI Web
 
 volumes:
   postgres_data_dev:

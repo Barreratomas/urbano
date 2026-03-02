@@ -16,10 +16,13 @@ services:
       dockerfile: dockerfile
     depends_on:
       - database
+      - redis
+      - mailhog
     env_file:
       - ./backend/.env
     volumes:
       - ./backend/uploads:/app/uploads
+
 
   frontend:
     container_name: frontend
@@ -42,6 +45,19 @@ services:
       ADMINER_DEFAULT_SERVER: database
     depends_on:
       - database
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    restart: always
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # UI Web
 
 volumes:
   postgres_data:

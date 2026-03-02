@@ -1,5 +1,6 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
@@ -16,6 +17,16 @@ import { VotesModule } from './votes/votes.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST') || 'localhost',
+          port: configService.get('REDIS_PORT') || 6379,
+        },
+      }),
+      inject: [ConfigService],
+    }),
     UserModule,
     AuthModule,
     CourseModule,

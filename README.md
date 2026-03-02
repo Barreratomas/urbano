@@ -12,6 +12,7 @@ Además de las funcionalidades base, se han implementado las siguientes mejoras:
 - **Ranking**: Sistema de votación (estrellas) para calificar los cursos.
 - **Soporte Multilenguaje**: Interfaz disponible en Español e Inglés.
 - **Sección de Contacto**: Formulario funcional para consultas.
+- **Envío de Emails Asíncrono**: Implementación de colas y workers para el envío de correos sin bloquear la respuesta de la API.
 - **Estadísticas Inteligentes**: Dashboard adaptado según el rol del usuario.
 - **Seguridad Avanzada**: Verificación de cuenta activa en tiempo real y cierre de sesión automático si la cuenta es deshabilitada.
 
@@ -30,8 +31,9 @@ Además de las funcionalidades base, se han implementado las siguientes mejoras:
 
 ##  Stack Tecnológico
 
-- **Backend**: NestJS + TypeORM + PostgreSQL
+- **Backend**: NestJS + TypeORM + PostgreSQL + **Bull (Queues) + Redis**
 - **Frontend**: React + Tailwind CSS + React Query + Lucide Icons
+- **Email**: MailerModule (Nodemailer) + MailHog (Development SMTP)
 - **Infraestructura**: Docker & Docker Compose
 - **Documentación**: Swagger (API) & Mermaid (ERD)
 
@@ -40,8 +42,20 @@ Además de las funcionalidades base, se han implementado las siguientes mejoras:
 El sistema utiliza una arquitectura **Multi-Stage Build** para optimizar el tamaño de las imágenes de producción.
 
 - **Frontend**: Servido mediante **Nginx** con configuración de proxy para evitar problemas de CORS y centralizar las peticiones a `/api`.
-- **Backend**: Despliegue sobre **Node 18-Alpine**, con separación de dependencias de build y runtime.
+- **Backend**: Despliegue sobre **Node 18-Alpine**, con procesamiento de tareas en segundo plano mediante **Bull/Redis**.
 - **Base de Datos**: PostgreSQL con volumen persistente.
+- **Worker**: Procesa el envío de correos de forma asíncrona para mejorar el rendimiento de la API.
+
+##  Email y Monitoreo (MailHog)
+
+Durante el desarrollo, los correos enviados por el sistema de contacto no se envían a direcciones reales. En su lugar, son capturados por **MailHog**, una herramienta de pruebas SMTP.
+
+- **Servidor SMTP**: `mailhog:1025`
+- **Interfaz Web de Emails**: [http://localhost:8025](http://localhost:8025)
+
+> **Nota importante**: Para realizar pruebas con MailHog, **no es necesario** configurar un usuario (`MAIL_USER`) ni una contraseña (`MAIL_PASS`) en el archivo `.env`. El sistema está configurado para omitir la autenticación si estos campos están vacíos.
+
+En esta interfaz podrás ver el contenido de los correos enviados, el remitente, el asunto y la hora de procesamiento del worker.
 
 ##  Documentación Adicional
 
@@ -79,20 +93,22 @@ docker exec backend yarn test
 Para desplegar la aplicación completa con contenedores optimizados:
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Modo Desarrollo (Hot Reload)
 Si deseas realizar cambios en tiempo real y tener volúmenes activos:
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000/api
 - **Swagger Docs**: http://localhost:5000/api/docs
+- **MailHog (Email UI)**: http://localhost:8025
 - **Adminer (DB Manager)**: http://localhost:8080 (servidor: `database`)
+- **Redis**: puerto `6379` (usado internamente por Bull)
 
 ### Credenciales por defecto
 - **Usuario**: `admin`
