@@ -21,6 +21,8 @@ describe('EmailProcessor', () => {
       ],
     }).compile();
 
+    module.useLogger(false); // <-- AGREGA ESTA LÍNEA AQUÍ
+
     processor = module.get<EmailProcessor>(EmailProcessor);
     mailerService = module.get<MailerService>(MailerService);
   });

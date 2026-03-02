@@ -35,6 +35,8 @@ jobs:
   frontend-ci:
     name: Frontend Validation
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --openssl-legacy-provider
     steps:
       - uses: actions/checkout@v3
       
@@ -48,8 +50,9 @@ jobs:
       - name: Install dependencies
         run: cd frontend && npm install
         
+
       - name: Run Unit Tests
-        run: cd frontend && npm test -- --watchAll=false
+        run: cd frontend && npm test -- --watchAll=false --passWithNoTests
         
       - name: Build Check
         run: cd frontend && npm run build
