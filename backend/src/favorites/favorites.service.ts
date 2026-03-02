@@ -1,3 +1,7 @@
+/**
+ * Servicio de Favoritos.
+ * Gestiona la lógica para marcar y desmarcar cursos como favoritos por parte de los usuarios.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +15,9 @@ export class FavoritesService {
     private readonly favRepo: Repository<Favorite>,
   ) {}
 
+  /**
+   * Alterna el estado de favorito de un curso para un usuario.
+   */
   async toggle(userId: string, courseId: string): Promise<Favorite> {
     try {
       const existing = await this.favRepo.findOne({
@@ -30,6 +37,9 @@ export class FavoritesService {
     }
   }
 
+  /**
+   * Obtiene la lista de favoritos de un usuario específico.
+   */
   async listByUser(userId: string): Promise<Favorite[]> {
     try {
       return await this.favRepo.find({ where: { user: { id: userId } }, relations: ['course'] });

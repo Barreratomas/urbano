@@ -1,3 +1,7 @@
+/**
+ * Script de ejecución de seeders.
+ * Configura la conexión a la base de datos y ejecuta los seeders de usuarios y cursos.
+ */
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { seeder } from 'nestjs-seeder';

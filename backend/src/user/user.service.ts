@@ -1,3 +1,7 @@
+/**
+ * Servicio de Usuarios.
+ * Contiene la lógica de negocio para la gestión de usuarios, incluyendo el cifrado de contraseñas.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -18,6 +22,9 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Crea un nuevo usuario tras validar que no exista previamente.
+   */
   async save(createUserDto: CreateUserDto): Promise<User> {
     try {
       const user = await this.findByUsername(createUserDto.username);
@@ -35,6 +42,9 @@ export class UserService {
     }
   }
 
+  /**
+   * Busca usuarios según los filtros proporcionados.
+   */
   async findAll(userQuery: UserQuery): Promise<User[]> {
     try {
       const { limit, offset, sortBy, sortOrder, role, firstName, lastName, username } = userQuery;
@@ -63,6 +73,9 @@ export class UserService {
     }
   }
 
+  /**
+   * Obtiene un usuario por su ID único.
+   */
   async findById(id: string): Promise<User> {
     try {
       const user = await this.userRepository.findOne(id);
@@ -78,6 +91,9 @@ export class UserService {
     }
   }
 
+  /**
+   * Busca un usuario por su nombre de usuario.
+   */
   async findByUsername(username: string): Promise<User> {
     try {
       return await this.userRepository.findOne({ where: { username } });
@@ -86,11 +102,14 @@ export class UserService {
     }
   }
 
+  /**
+   * Actualiza los datos de un usuario existente.
+   */
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {
       const currentUser = await this.findById(id);
 
-      /* If username is same as before, delete it from the dto */
+      /* Si el nombre de usuario es el mismo, lo eliminamos del DTO */
       if (currentUser.username === updateUserDto.username) {
         delete updateUserDto.username;
       }
@@ -114,6 +133,9 @@ export class UserService {
     }
   }
 
+  /**
+   * Elimina un usuario del sistema por su ID.
+   */
   async delete(id: string): Promise<string> {
     try {
       await this.findById(id);
@@ -125,11 +147,16 @@ export class UserService {
     }
   }
 
+  /**
+   * Cuenta el total de usuarios en el sistema.
+   */
   async count(): Promise<number> {
     return await this.userRepository.count();
   }
 
-  /* Hash the refresh token and save it to the database */
+  /**
+   * Cifra el token de refresco y lo guarda en la base de datos.
+   */
   async setRefreshToken(id: string, refreshToken: string): Promise<void> {
     await this.userRepository.update(id, {
       refreshToken: refreshToken ? await bcrypt.hash(refreshToken, 10) : null,

@@ -1,3 +1,7 @@
+/**
+ * Página de Contenidos de un Curso.
+ * Muestra las lecciones/contenidos asociados a un curso y permite la gestión (CRUD) por parte de administradores.
+ */
 import { useState } from 'react';
 import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -24,7 +28,7 @@ export default function Course() {
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState<File>();
 
-  // Pagination and Sorting states
+  // Estados para paginación y ordenamiento
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [sortBy, setSortBy] = useState('name');
@@ -33,6 +37,7 @@ export default function Course() {
   const [addContentShow, setAddContentShow] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
+  // Consulta de los datos del curso actual
   const courseQuery = useQuery(['course', id], async () => courseService.findOne(id));
 
   const {
@@ -42,6 +47,7 @@ export default function Course() {
     reset,
   } = useForm<CreateContentRequest>();
 
+  // Consulta paginada de los contenidos del curso
   const { data, isLoading, refetch, isFetching } = useQuery(
     [`contents-${id}`, name, description, offset, limit, sortBy, sortOrder],
     async () =>
@@ -58,9 +64,12 @@ export default function Course() {
     },
   );
 
+  /**
+   * Guarda un nuevo contenido asociándolo al curso actual.
+   */
   const saveCourse = async (createContentRequest: CreateContentRequest) => {
     try {
-      // merge file if present
+      // Adjunta el archivo de imagen si está presente
       await contentService.save(id, {
         ...createContentRequest,
         image: imageFile,
@@ -194,8 +203,7 @@ export default function Course() {
         labelKey="contents"
       />
 
-      {/* Add User Modal */}
-      {/* Add Content Modal */}
+      {/* Modal para agregar contenido */}
       <Modal show={addContentShow}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{t('addContent')}</h2>

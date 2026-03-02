@@ -1,3 +1,6 @@
+/**
+ * Guard para controlar el acceso basado en roles de usuario.
+ */
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -8,8 +11,9 @@ import { Role } from '../../enums/role.enum';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  /* Check if roles array from the roles decorator includes the user's role */
-
+  /**
+   * Verifica si los roles requeridos coinciden con el rol del usuario autenticado.
+   */
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),

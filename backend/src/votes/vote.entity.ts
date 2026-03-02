@@ -1,3 +1,6 @@
+/**
+ * Entidad que representa la calificación (voto) de un usuario para un curso.
+ */
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Course } from '../course/course.entity';

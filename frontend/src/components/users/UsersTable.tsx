@@ -1,3 +1,7 @@
+/**
+ * Tabla de Usuarios.
+ * Muestra la lista de usuarios con opciones para editar y eliminar.
+ */
 import { useState } from 'react';
 import { AlertTriangle, Loader, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -124,7 +128,7 @@ export default function UsersTable({ data, isLoading, onRefresh }: UsersTablePro
           </div>
         ) : null}
       </div>
-      {/* Delete User Modal */}
+      {/* Modal para eliminar usuario */}
       <Modal show={deleteShow}>
         <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
@@ -155,7 +159,7 @@ export default function UsersTable({ data, isLoading, onRefresh }: UsersTablePro
           <div className="text-red-500 p-3 font-semibold border rounded-md bg-red-50">{error}</div>
         ) : null}
       </Modal>
-      {/* Update User Modal */}
+      {/* Modal para actualizar usuario */}
       <Modal show={updateShow}>
         <div className="flex">
           <h1 className="font-semibold mb-3">{t('updateUser')}</h1>

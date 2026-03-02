@@ -11,12 +11,15 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { Role } from './enums/role.enum';
 import { User } from './user/user.entity';
 
+/**
+ * Crea un usuario administrador por defecto si no existe en el sistema.
+ */
 async function createAdminOnFirstUse() {
   try {
     const admin = await User.findOne({ where: { username: 'admin' } });
 
     if (!admin) {
-      Logger.log('Creating admin user on first use...', 'Bootstrap');
+      Logger.log('Creando usuario administrador por primera vez...', 'Bootstrap');
 
       const newUser = User.create({
         firstName: 'admin',
@@ -29,13 +32,20 @@ async function createAdminOnFirstUse() {
 
       await newUser.save();
 
-      Logger.log('Admin user created successfully.', 'Bootstrap');
+      Logger.log('Usuario administrador creado correctamente.', 'Bootstrap');
     }
   } catch (error) {
-    Logger.error('Failed to create admin user: ' + error.message, error.stack, 'Bootstrap');
+    Logger.error(
+      'Error al crear el usuario administrador: ' + error.message,
+      error.stack,
+      'Bootstrap',
+    );
   }
 }
 
+/**
+ * Función de arranque del servidor.
+ */
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -44,14 +54,14 @@ async function bootstrap() {
 
   /*
    |--------------------------------------------------------------------------
-   | Global Prefix
+   | Prefijo Global
    |--------------------------------------------------------------------------
    */
   app.setGlobalPrefix('api');
 
   /*
    |--------------------------------------------------------------------------
-   | CORS Configuration (Docker friendly)
+   | Configuración de CORS
    |--------------------------------------------------------------------------
    */
   app.enableCors({
@@ -64,7 +74,7 @@ async function bootstrap() {
 
   /*
    |--------------------------------------------------------------------------
-   | Global Middlewares
+   | Middlewares Globales
    |--------------------------------------------------------------------------
    */
   app.use(cookieParser());
@@ -78,14 +88,14 @@ async function bootstrap() {
 
   /*
    |--------------------------------------------------------------------------
-   | Global Filters
+   | Filtros Globales
    |--------------------------------------------------------------------------
    */
   app.useGlobalFilters(new AllExceptionsFilter());
 
   /*
    |--------------------------------------------------------------------------
-   | Static Files (Uploads)
+   | Archivos Estáticos (Cargas)
    |--------------------------------------------------------------------------
    */
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
@@ -94,12 +104,12 @@ async function bootstrap() {
 
   /*
    |--------------------------------------------------------------------------
-   | Swagger Documentation
+   | Documentación Swagger
    |--------------------------------------------------------------------------
    */
   const config = new DocumentBuilder()
     .setTitle('Urbano Admin API')
-    .setDescription('API Documentation for Urbano Admin Project')
+    .setDescription('Documentación de la API para el proyecto Urbano Admin')
     .setVersion('1.1')
     .addBearerAuth()
     .build();
@@ -109,19 +119,19 @@ async function bootstrap() {
 
   /*
    |--------------------------------------------------------------------------
-   | First Use Admin Seeder
+   | Seeder de Administrador Inicial
    |--------------------------------------------------------------------------
    */
   await createAdminOnFirstUse();
 
   /*
    |--------------------------------------------------------------------------
-   | Start Server
+   | Inicio del Servidor
    |--------------------------------------------------------------------------
    */
   await app.listen(5000, '0.0.0.0');
 
-  Logger.log('Backend listening on http://0.0.0.0:5000/api', 'Bootstrap');
+  Logger.log('Backend escuchando en http://0.0.0.0:5000/api', 'Bootstrap');
 }
 
 bootstrap();

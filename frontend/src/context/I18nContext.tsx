@@ -1,8 +1,15 @@
+/**
+ * Contexto de internacionalización (I18n) para soportar múltiples idiomas.
+ * Gestiona el diccionario de traducciones y el estado del idioma seleccionado.
+ */
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type Lang = 'es' | 'en';
 type Dict = Record<string, string>;
 
+/**
+ * Diccionarios de traducción para español e inglés.
+ */
 const DICTS: Record<Lang, Dict> = {
   es: {
     dashboard: 'Tablero',

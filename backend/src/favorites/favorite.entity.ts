@@ -1,3 +1,6 @@
+/**
+ * Entidad que representa la relación de curso favorito para un usuario.
+ */
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Course } from '../course/course.entity';

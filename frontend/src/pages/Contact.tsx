@@ -1,3 +1,7 @@
+/**
+ * Página de Contacto.
+ * Permite a los usuarios enviar mensajes de consulta a través de un formulario.
+ */
 import { Loader } from 'react-feather';
 import { useForm } from 'react-hook-form';
 
@@ -20,6 +24,10 @@ export default function Contact() {
     formState: { isSubmitting },
     reset,
   } = useForm<ContactForm>();
+
+  /**
+   * Maneja el envío del formulario de contacto.
+   */
   const onSubmit = async (values: ContactForm) => {
     await apiService.post('/contact', values);
     reset();

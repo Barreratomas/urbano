@@ -1,3 +1,7 @@
+/**
+ * Filtro global de excepciones.
+ * Captura todos los errores de la aplicación y los devuelve en un formato estandarizado.
+ */
 import {
   ArgumentsHost,
   Catch,
@@ -12,6 +16,9 @@ import { Request, Response } from 'express';
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger('HttpException');
 
+  /**
+   * Captura y procesa la excepción.
+   */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -33,7 +40,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       ...(typeof message === 'object' ? message : { message }),
     };
 
-    // Log the error
+    // Registrar el error en el log
     if (status >= 500) {
       this.logger.error(
         `${request.method} ${request.url} ${status} - Error: ${JSON.stringify(exception)}`,

@@ -1,3 +1,7 @@
+/**
+ * Estrategia de autenticación JWT para Passport.
+ * Valida el token Bearer de las peticiones y extrae la información del usuario.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -14,6 +18,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * Valida el payload del token y verifica que el usuario siga activo.
+   */
   async validate(payload: any) {
     const user = await this.userService.findById(payload.sub);
 

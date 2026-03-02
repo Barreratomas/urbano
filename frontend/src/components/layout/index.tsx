@@ -1,3 +1,7 @@
+/**
+ * Componente de Diseño (Layout).
+ * Envuelve las páginas con la barra lateral y gestiona la responsividad.
+ */
 import { useState } from 'react';
 import { Menu, X } from 'react-feather';
 

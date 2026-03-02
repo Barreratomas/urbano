@@ -1,3 +1,7 @@
+/**
+ * Componentes para Secciones de Filtros.
+ * Incluye el contenedor principal, grupos de columnas y elementos individuales de filtro.
+ */
 import React, { ReactNode } from 'react';
 
 interface FilterSectionProps {

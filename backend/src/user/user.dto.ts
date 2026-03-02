@@ -1,3 +1,6 @@
+/**
+ * DTOs para la gestión de usuarios.
+ */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 

@@ -1,3 +1,7 @@
+/**
+ * Componente de Tabla genérico.
+ * Proporciona una estructura de tabla estilizada con columnas configurables.
+ */
 import { ReactNode } from 'react';
 
 interface TableColumn {

@@ -1,3 +1,7 @@
+/**
+ * Servicio de Inscripciones.
+ * Gestiona el proceso de inscripción y baja de usuarios en los cursos.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +15,9 @@ export class EnrollmentsService {
     private readonly repo: Repository<Enrollment>,
   ) {}
 
+  /**
+   * Realiza la inscripción de un usuario en un curso.
+   */
   async enroll(userId: string, courseId: string): Promise<Enrollment> {
     try {
       const exists = await this.repo.findOne({
@@ -27,6 +34,9 @@ export class EnrollmentsService {
     }
   }
 
+  /**
+   * Da de baja la inscripción de un usuario en un curso.
+   */
   async withdraw(userId: string, courseId: string): Promise<void> {
     try {
       await this.repo.delete({ user: { id: userId } as any, course: { id: courseId } as any });
@@ -35,6 +45,9 @@ export class EnrollmentsService {
     }
   }
 
+  /**
+   * Lista todas las inscripciones de un usuario.
+   */
   async listByUser(userId: string): Promise<Enrollment[]> {
     try {
       return await this.repo.find({ where: { user: { id: userId } }, relations: ['course'] });

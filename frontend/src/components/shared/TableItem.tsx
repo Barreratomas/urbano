@@ -1,3 +1,7 @@
+/**
+ * Componente de Celda de Tabla.
+ * Estiliza las celdas individuales para mantener consistencia visual.
+ */
 import { ReactNode } from 'react';
 
 interface TableItemProps {

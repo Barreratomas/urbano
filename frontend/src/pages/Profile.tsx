@@ -1,3 +1,7 @@
+/**
+ * Página de Perfil de Usuario.
+ * Permite al usuario ver y actualizar su información personal.
+ */
 import UpdateProfile from '../components/dashboard/UpdateProfile';
 import Layout from '../components/layout';
 import useI18n from '../context/I18nContext';

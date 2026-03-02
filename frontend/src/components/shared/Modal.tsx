@@ -1,3 +1,7 @@
+/**
+ * Componente de Ventana Modal.
+ * Implementa una capa superpuesta animada utilizando React Portals.
+ */
 import { HTMLProps, ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 

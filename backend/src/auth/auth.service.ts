@@ -1,3 +1,7 @@
+/**
+ * Servicio de Autenticación.
+ * Gestiona la lógica de inicio/cierre de sesión, generación de tokens y refresco.
+ */
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +18,10 @@ export class AuthService {
 
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
+  /**
+   * Procesa la solicitud de inicio de sesión.
+   * Valida credenciales, verifica que el usuario esté activo y genera tokens.
+   */
   async login(loginDto: LoginDto, response: Response): Promise<LoginResponseDto> {
     const { username, password } = loginDto;
 
@@ -39,7 +47,7 @@ export class AuthService {
       { subject: id, expiresIn: '15m', secret: this.SECRET },
     );
 
-    /* Generates a refresh token and stores it in a httponly cookie */
+    /* Genera un token de refresco y lo almacena en una cookie httponly */
     const refreshToken = await this.jwtService.signAsync(
       { username, firstName, lastName, role },
       { subject: id, expiresIn: '1y', secret: this.REFRESH_SECRET },
@@ -52,7 +60,9 @@ export class AuthService {
     return { token: accessToken, user };
   }
 
-  /* Because JWT is a stateless authentication, this function removes the refresh token from the cookies and the database */
+  /**
+   * Dado que JWT es apátrida, esta función elimina el token de refresco de las cookies y la BD.
+   */
   async logout(request: Request, response: Response): Promise<boolean> {
     const userId = request.user['userId'];
     await this.userService.setRefreshToken(userId, null);
@@ -60,6 +70,9 @@ export class AuthService {
     return true;
   }
 
+  /**
+   * Refresca el token de acceso mediante el token de refresco proporcionado.
+   */
   async refresh(refreshToken: string, response: Response): Promise<LoginResponseDto> {
     if (!refreshToken) {
       throw new HttpException('Refresh token required', HttpStatus.BAD_REQUEST);

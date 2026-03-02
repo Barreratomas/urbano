@@ -1,3 +1,6 @@
+/**
+ * Parámetros de consulta para el filtrado y paginación de cursos.
+ */
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';

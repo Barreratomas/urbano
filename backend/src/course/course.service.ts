@@ -1,3 +1,7 @@
+/**
+ * Servicio de Cursos.
+ * Gestiona la lógica de negocio para cursos, inscripciones, favoritos, valoraciones y el calendario.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, ILike, IsNull, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
@@ -23,6 +27,9 @@ export class CourseService {
     private readonly enrollmentRepository: Repository<Enrollment>,
   ) {}
 
+  /**
+   * Obtiene la lista de cursos favoritos para un usuario dado.
+   */
   async myFavorites(userId: string): Promise<Course[]> {
     try {
       const favorites = await this.favoriteRepository.find({
@@ -35,6 +42,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Obtiene la lista de cursos en los que un usuario está inscrito.
+   */
   async myEnrollments(userId: string): Promise<Course[]> {
     try {
       const enrollments = await this.enrollmentRepository.find({
@@ -47,6 +57,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Crea un nuevo curso y establece la fecha de creación.
+   */
   async save(createCourseDto: CreateCourseDto): Promise<Course> {
     try {
       const course = Object.assign(new Course(), {
@@ -59,6 +72,10 @@ export class CourseService {
     }
   }
 
+  /**
+   * Busca cursos aplicando filtros y paginación.
+   * Si se proporciona un userId, marca si el usuario está inscrito o lo tiene en favoritos.
+   */
   async findAll(courseQuery: CourseQuery, userId?: string): Promise<Course[]> {
     try {
       const { limit, offset, sortBy, sortOrder, name, description } = courseQuery;
@@ -95,6 +112,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Obtiene un curso por su ID.
+   */
   async findById(id: string, userId?: string): Promise<Course> {
     try {
       const course = await this.courseRepository.findOne(id, {
@@ -116,6 +136,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Actualiza la información de un curso.
+   */
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
     try {
       await this.findById(id);
@@ -127,6 +150,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Elimina un curso.
+   */
   async delete(id: string): Promise<string> {
     try {
       await this.findById(id);
@@ -138,6 +164,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Calcula el promedio de valoraciones para un curso.
+   */
   async getAverageRating(courseId: string): Promise<number> {
     try {
       const votes = await this.voteRepository.find({ where: { course: { id: courseId } } });
@@ -149,6 +178,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Cuenta el total de cursos.
+   */
   async count(): Promise<number> {
     try {
       return await this.courseRepository.count();
@@ -157,6 +189,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Obtiene los datos de los cursos para el calendario en un rango dado.
+   */
   async getCalendarData(
     start: string,
     end: string,
@@ -168,7 +203,7 @@ export class CourseService {
     const endDate = new Date(end);
     endDate.setHours(23, 59, 59, 999);
 
-    // Find courses that overlap with the range
+    // Buscar cursos que se solapen con el rango
     const courses = await this.courseRepository.find({
       where: [
         {
@@ -188,7 +223,7 @@ export class CourseService {
       isEnrolled: userId ? c.enrollments.some((e) => e.user.id === userId) : false,
     }));
 
-    // Group by date - A course can appear in multiple days if it spans a range
+    // Agrupar por fecha - Un curso puede aparecer en varios días si abarca un rango
     const map = new Map<string, any[]>();
 
     const toDateKey = (date: Date) => {
@@ -202,12 +237,12 @@ export class CourseService {
       const s = new Date(c.startDate);
       const e = c.endDate ? new Date(c.endDate) : new Date(c.startDate);
 
-      // Start of the course or start of the range
+      // Inicio del curso o inicio del rango
       const curr = new Date(Math.max(s.getTime(), startDate.getTime()));
-      // End of the course or end of the range
+      // Fin del curso o fin del rango
       const last = new Date(Math.min(e.getTime(), endDate.getTime()));
 
-      // Normalization to midnight for comparison
+      // Normalización a medianoche para comparación
       curr.setHours(0, 0, 0, 0);
       last.setHours(0, 0, 0, 0);
 
@@ -225,12 +260,17 @@ export class CourseService {
     }));
   }
 
+  /**
+   * Obtiene el ranking de cursos.
+   */
   async getRanking(): Promise<Course[]> {
-    // Basic ranking: return courses sorted by name for now, or implement rating sort if needed
-    // Ideally this would join with votes and sort by avg rating
+    // Ranking básico: devuelve los cursos ordenados por nombre por ahora.
     return await this.courseRepository.find({ order: { name: 'ASC' } });
   }
 
+  /**
+   * Agrega o elimina un curso de los favoritos de un usuario.
+   */
   async toggleFavorite(userId: string, courseId: string): Promise<void> {
     const existing = await this.favoriteRepository.findOne({
       where: { user: { id: userId }, course: { id: courseId } },
@@ -246,6 +286,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Inscribe a un usuario en un curso.
+   */
   async enroll(userId: string, courseId: string): Promise<void> {
     const exists = await this.enrollmentRepository.findOne({
       where: { user: { id: userId }, course: { id: courseId } },
@@ -259,6 +302,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Retira la inscripción de un usuario de un curso.
+   */
   async withdraw(userId: string, courseId: string): Promise<void> {
     const enrollment = await this.enrollmentRepository.findOne({
       where: { user: { id: userId }, course: { id: courseId } },
@@ -268,6 +314,9 @@ export class CourseService {
     }
   }
 
+  /**
+   * Registra o actualiza la valoración de un usuario para un curso.
+   */
   async vote(userId: string, courseId: string, rating: number): Promise<void> {
     const existing = await this.voteRepository.findOne({
       where: { user: { id: userId }, course: { id: courseId } },

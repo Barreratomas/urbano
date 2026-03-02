@@ -1,3 +1,7 @@
+/**
+ * Controlador de Votaciones.
+ * Permite a los usuarios calificar los cursos con una puntuación.
+ */
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 

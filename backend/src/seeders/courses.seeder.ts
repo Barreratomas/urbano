@@ -1,3 +1,7 @@
+/**
+ * Seeder de Cursos y Contenidos.
+ * Genera datos de prueba iniciales para la base de datos.
+ */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataFactory, Seeder } from 'nestjs-seeder';
@@ -15,11 +19,14 @@ export class CoursesSeeder implements Seeder {
     private readonly contentRepository: Repository<Content>,
   ) {}
 
+  /**
+   * Ejecuta el sembrado de datos.
+   */
   async seed(): Promise<any> {
-    // Generate 5 random courses.
+    // Generar 5 cursos aleatorios.
     const courses = DataFactory.createForClass(Course).generate(5) as any[];
 
-    // Add a specific course that spans multiple days for testing
+    // Agregar un curso específico que abarque varios días para pruebas
     const testCourse = {
       name: 'Test Multi-Day Course',
       description: 'A course that spans from Feb 28 to March 1, 2026',
@@ -32,14 +39,14 @@ export class CoursesSeeder implements Seeder {
 
     const savedCourses = await this.courseRepository.save(courses);
 
-    // For each course, generate 3-7 contents.
+    // Para cada curso, generar de 3 a 7 contenidos.
     for (const course of savedCourses) {
       const count = Math.floor(Math.random() * 5) + 3;
       const contents = DataFactory.createForClass(Content).generate(count);
 
       for (const content of contents) {
         content.course = course;
-        // assign a placeholder image so we see something after seeding
+        // Asignar una imagen de marcador de posición para visualización
         content.imageUrl = 'https://via.placeholder.com/150';
       }
 
@@ -47,6 +54,9 @@ export class CoursesSeeder implements Seeder {
     }
   }
 
+  /**
+   * Elimina todos los datos generados por este seeder.
+   */
   async drop(): Promise<any> {
     await this.contentRepository.delete({});
     return this.courseRepository.delete({});

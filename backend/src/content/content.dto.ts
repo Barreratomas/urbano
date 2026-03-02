@@ -1,3 +1,6 @@
+/**
+ * DTOs para la gestión de contenidos de lecciones.
+ */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
@@ -12,7 +15,7 @@ export class CreateContentDto {
   @IsString()
   description: string;
 
-  // when a file is uploaded by multer, controller will set this value
+  /* El controlador establecerá este valor cuando se cargue un archivo mediante multer */
   @ApiPropertyOptional({ example: '/uploads/content.png' })
   @IsOptional()
   @IsString()

@@ -1,3 +1,7 @@
+/**
+ * Tabla de Contenidos.
+ * Muestra las lecciones de un curso con opciones para editar y eliminar.
+ */
 import { useState } from 'react';
 import { AlertTriangle, Loader, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -57,7 +61,7 @@ export default function ContentsTable({
   };
 
   const handleUpdate = async (updateContentRequest: UpdateContentRequest) => {
-    // attach new file if selected
+    // Adjuntar nuevo archivo si se selecciona
     if (imageFile) {
       updateContentRequest.image = imageFile;
     }
@@ -149,7 +153,7 @@ export default function ContentsTable({
         ) : null}
       </div>
 
-      {/* Delete Content Modal */}
+      {/* Modal para eliminar contenido */}
       <Modal show={deleteShow}>
         <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
@@ -181,7 +185,7 @@ export default function ContentsTable({
         ) : null}
       </Modal>
 
-      {/* Update Content Modal */}
+      {/* Modal para actualizar contenido */}
       {selectedContentId ? (
         <Modal show={updateShow}>
           <div className="flex">

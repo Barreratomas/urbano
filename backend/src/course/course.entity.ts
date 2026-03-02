@@ -1,3 +1,6 @@
+/**
+ * Entidad que representa a un curso en la base de datos.
+ */
 import { Factory } from 'nestjs-seeder';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 

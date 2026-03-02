@@ -1,3 +1,7 @@
+/**
+ * Controlador de Inscripciones.
+ * Permite a los usuarios inscribirse o darse de baja en los cursos.
+ */
 import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

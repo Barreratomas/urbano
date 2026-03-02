@@ -1,3 +1,7 @@
+/**
+ * Punto de entrada principal de la aplicación React.
+ * Configura los proveedores de contexto globales (Autenticación, I18n, React Query).
+ */
 import './polyfills';
 import './styles/index.css';
 

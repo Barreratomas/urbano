@@ -1,3 +1,7 @@
+/**
+ * Página de Calendario de Cursos.
+ * Permite visualizar los cursos programados mensualmente y filtrar por inscripciones.
+ */
 import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, RefreshCw } from 'react-feather';
 import { useQuery } from 'react-query';
@@ -6,6 +10,9 @@ import Layout from '../components/layout';
 import useI18n from '../context/I18nContext';
 import courseService from '../services/CourseService';
 
+/**
+ * Formatea una fecha en formato YYYY-MM-DD.
+ */
 function formatDate(date: Date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -13,6 +20,9 @@ function formatDate(date: Date) {
   return `${y}-${m}-${d}`;
 }
 
+/**
+ * Obtiene el rango de fechas (inicio y fin) para el mes de la fecha proporcionada.
+ */
 function getMonthRange(date: Date) {
   const start = new Date(date.getFullYear(), date.getMonth(), 1);
   const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -28,12 +38,14 @@ export default function Calendar() {
   const [onlyMyCourses, setOnlyMyCourses] = useState(false);
   const params = useMemo(() => getMonthRange(current), [current]);
 
+  // Consulta de datos del calendario mediante React Query
   const { data, isLoading, refetch, isFetching } = useQuery(
     ['calendar', params],
     () => courseService.getCalendar(params),
     { keepPreviousData: true },
   );
 
+  // Calcula todos los días del mes actual para renderizar la cuadrícula
   const daysInMonth = useMemo(() => {
     const startDate = new Date(current.getFullYear(), current.getMonth(), 1);
     const endDate = new Date(current.getFullYear(), current.getMonth() + 1, 0);
@@ -44,6 +56,7 @@ export default function Calendar() {
     return days;
   }, [current]);
 
+  // Mapea los cursos obtenidos a sus respectivas fechas
   const coursesByDate = useMemo(() => {
     const map: Record<string, { date: string; courses: any[] }> = {};
     (data || []).forEach((item) => {

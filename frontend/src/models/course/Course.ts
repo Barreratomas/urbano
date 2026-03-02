@@ -1,3 +1,6 @@
+/**
+ * Interfaz que representa un curso en la plataforma.
+ */
 export default interface Course {
   id: string;
   name: string;

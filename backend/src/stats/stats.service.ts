@@ -1,3 +1,7 @@
+/**
+ * Servicio de Estadísticas.
+ * Consolida los conteos de diferentes entidades para el dashboard.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { ContentService } from '../content/content.service';
@@ -13,6 +17,9 @@ export class StatsService {
     private readonly contentService: ContentService,
   ) {}
 
+  /**
+   * Obtiene el resumen de estadísticas generales.
+   */
   async getStats(): Promise<StatsResponseDto> {
     try {
       const numberOfUsers = await this.userService.count();

@@ -1,3 +1,7 @@
+/**
+ * Servicio de Contenidos.
+ * Gestiona la lógica de negocio para las lecciones o materiales asociados a los cursos.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
@@ -16,6 +20,9 @@ export class ContentService {
     private readonly contentRepository: Repository<Content>,
   ) {}
 
+  /**
+   * Guarda un nuevo contenido asociado a un curso.
+   */
   async save(courseId: string, createContentDto: CreateContentDto): Promise<Content> {
     try {
       const { name, description, imageUrl } = createContentDto;
@@ -34,6 +41,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Busca todos los contenidos aplicando filtros.
+   */
   async findAll(contentQuery: ContentQuery): Promise<Content[]> {
     try {
       const { limit, offset, sortBy, sortOrder, name, description } = contentQuery;
@@ -60,6 +70,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Obtiene un contenido específico por su ID.
+   */
   async findById(id: string): Promise<Content> {
     try {
       const content = await this.contentRepository.findOne(id);
@@ -75,6 +88,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Busca un contenido específico validando su pertenencia a un curso.
+   */
   async findByCourseIdAndId(courseId: string, id: string): Promise<Content> {
     try {
       const content = await this.contentRepository.findOne({
@@ -90,6 +106,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Obtiene todos los contenidos de un curso específico.
+   */
   async findAllByCourseId(courseId: string, contentQuery: ContentQuery): Promise<Content[]> {
     try {
       const { limit, offset, sortBy, sortOrder, name, description } = contentQuery;
@@ -116,6 +135,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Actualiza la información de un contenido existente.
+   */
   async update(courseId: string, id: string, updateContentDto: UpdateContentDto): Promise<Content> {
     try {
       await this.findByCourseIdAndId(courseId, id);
@@ -127,6 +149,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Elimina un contenido del sistema.
+   */
   async delete(courseId: string, id: string): Promise<string> {
     try {
       await this.findByCourseIdAndId(courseId, id);
@@ -138,6 +163,9 @@ export class ContentService {
     }
   }
 
+  /**
+   * Cuenta el total de contenidos registrados.
+   */
   async count(): Promise<number> {
     try {
       return await this.contentRepository.count();

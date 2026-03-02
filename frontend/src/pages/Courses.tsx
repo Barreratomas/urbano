@@ -1,3 +1,7 @@
+/**
+ * Página de Cursos.
+ * Permite listar, filtrar y gestionar los cursos disponibles en la plataforma.
+ */
 import { useState } from 'react';
 import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -18,7 +22,7 @@ export default function Courses() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
-  // Pagination and Sorting states
+  // Estados para paginación y ordenamiento
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [sortBy, setSortBy] = useState('name');
@@ -177,7 +181,7 @@ export default function Courses() {
         labelKey="coursesCount"
       />
 
-      {/* Add User Modal */}
+      {/* Modal para agregar curso */}
       <Modal show={addCourseShow}>
         <div className="flex">
           <h1 className="font-semibold mb-3">{t('addCourse')}</h1>

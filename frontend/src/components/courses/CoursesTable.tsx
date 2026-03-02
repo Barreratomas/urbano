@@ -1,3 +1,7 @@
+/**
+ * Tabla de Cursos.
+ * Muestra la lista de cursos con opciones de filtrado, favoritos, votación y gestión (CRUD).
+ */
 import { useEffect, useState } from 'react';
 import { AlertTriangle, Heart, Loader, Star, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -7,6 +11,7 @@ import useI18n from '../../context/I18nContext';
 import useAuth from '../../hooks/useAuth';
 import Course from '../../models/course/Course';
 import UpdateCourseRequest from '../../models/course/UpdateCourseRequest';
+import { getRoutePath } from '../../routes';
 import courseService from '../../services/CourseService';
 import Modal from '../shared/Modal';
 import Table from '../shared/Table';
@@ -67,7 +72,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
         setFavoriteIds(next);
       }
     } catch (e) {
-      // silent error
+      // Error silencioso
     }
   };
 
@@ -86,7 +91,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
         setEnrolledIds(next);
       }
     } catch (e) {
-      // silent error
+      // Error silencioso
     }
   };
 
@@ -95,7 +100,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
       await courseService.vote(id, value);
       setRatings((prev) => ({ ...prev, [id]: value }));
     } catch (e) {
-      // silent error
+      // Error silencioso
     }
   };
 
@@ -145,7 +150,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
             : data.map(({ id, name, description, dateCreated }) => (
                 <tr key={id}>
                   <TableItem>
-                    <Link to={`/courses/${id}`}>{name}</Link>
+                    <Link to={getRoutePath('courseDetail', { id })}>{name}</Link>
                   </TableItem>
                   <TableItem>{description}</TableItem>
                   <TableItem>{new Date(dateCreated).toLocaleDateString()}</TableItem>
@@ -236,7 +241,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
           </div>
         ) : null}
       </div>
-      {/* Delete Course Modal */}
+      {/* Modal para eliminar curso */}
       <Modal show={deleteShow}>
         <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
@@ -267,7 +272,7 @@ export default function CoursesTable({ data, isLoading, onRefresh }: CoursesTabl
           <div className="text-red-500 p-3 font-semibold border rounded-md bg-red-50">{error}</div>
         ) : null}
       </Modal>
-      {/* Update Course Modal */}
+      {/* Modal para actualizar curso */}
       <Modal show={updateShow}>
         <div className="flex">
           <h1 className="font-semibold mb-3">{t('updateCourse')}</h1>

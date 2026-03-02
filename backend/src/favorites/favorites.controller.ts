@@ -1,3 +1,7 @@
+/**
+ * Controlador de Favoritos.
+ * Gestiona la lista de cursos favoritos de los usuarios.
+ */
 import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

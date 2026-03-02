@@ -1,3 +1,6 @@
+/**
+ * Decorador para definir los roles requeridos en un endpoint.
+ */
 import { SetMetadata } from '@nestjs/common';
 
 import { Role } from '../enums/role.enum';

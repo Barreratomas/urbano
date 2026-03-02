@@ -1,3 +1,7 @@
+/**
+ * Seeder de Usuarios.
+ * Crea usuarios de prueba con diferentes roles y contraseñas cifradas.
+ */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +18,9 @@ export class UsersSeeder implements Seeder {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Ejecuta el sembrado de usuarios.
+   */
   async seed(): Promise<any> {
     // 1. Crear usuarios fijos de prueba para cada rol
     const passwords = await Promise.all([
@@ -52,7 +59,7 @@ export class UsersSeeder implements Seeder {
     // Guardar usuarios fijos
     await this.userRepository.save(staticUsers);
 
-    // 2. Generar usuarios aleatorios adicionales (mix de roles)
+    // 2. Generar usuarios aleatorios adicionales (mezcla de roles)
     const randomUsers = DataFactory.createForClass(User).generate(10);
 
     for (const user of randomUsers) {
@@ -70,6 +77,9 @@ export class UsersSeeder implements Seeder {
     return this.userRepository.save(randomUsers);
   }
 
+  /**
+   * Elimina todos los usuarios generados por este seeder.
+   */
   async drop(): Promise<any> {
     return this.userRepository.delete({});
   }

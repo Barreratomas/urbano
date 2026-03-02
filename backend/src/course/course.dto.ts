@@ -1,3 +1,6 @@
+/**
+ * DTOs para la creación y actualización de cursos.
+ */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 

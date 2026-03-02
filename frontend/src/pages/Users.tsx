@@ -1,3 +1,7 @@
+/**
+ * Página de Gestión de Usuarios.
+ * Permite listar, filtrar y crear nuevos usuarios en el sistema.
+ */
 import { useState } from 'react';
 import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -22,7 +26,7 @@ export default function Users() {
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
 
-  // Pagination and Sorting states
+  // Estados para paginación y ordenamiento
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [sortBy, setSortBy] = useState('firstName');
@@ -73,7 +77,7 @@ export default function Users() {
 
   const handleNextPage = () => {
     if (data && data.length === limit - (offset === 0 ? 1 : 0)) {
-      // Simple check for next page availability
+      // Verificación simple de disponibilidad de siguiente página
       setOffset((prev) => prev + limit);
     }
   };
@@ -192,7 +196,7 @@ export default function Users() {
         labelKey="usersCount"
       />
 
-      {/* Add User Modal */}
+      {/* Modal para agregar usuario */}
       <Modal show={addUserShow}>
         <div className="flex">
           <h1 className="font-semibold mb-3">{t('addUser')}</h1>

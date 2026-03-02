@@ -1,3 +1,6 @@
+/**
+ * Entidad que representa la inscripción de un usuario en un curso.
+ */
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Course } from '../course/course.entity';

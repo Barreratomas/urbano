@@ -1,3 +1,6 @@
+/**
+ * Decorador de parámetro para extraer el usuario autenticado de la petición.
+ */
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const User = createParamDecorator((data: string, ctx: ExecutionContext) => {

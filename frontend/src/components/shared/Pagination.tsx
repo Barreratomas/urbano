@@ -1,3 +1,7 @@
+/**
+ * Componente de Paginación.
+ * Permite navegar entre páginas de resultados con controles de anterior y siguiente.
+ */
 import { ChevronLeft, ChevronRight } from 'react-feather';
 
 import useI18n from '../../context/I18nContext';

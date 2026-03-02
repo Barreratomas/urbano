@@ -1,3 +1,7 @@
+/**
+ * Servicio de Votaciones.
+ * Gestiona la lógica para calificar cursos por parte de los usuarios.
+ */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +15,9 @@ export class VotesService {
     private readonly repo: Repository<Vote>,
   ) {}
 
+  /**
+   * Registra o actualiza un voto para un curso.
+   */
   async vote(userId: string, courseId: string, rating: number): Promise<Vote> {
     try {
       const existing = await this.repo.findOne({
@@ -31,6 +38,9 @@ export class VotesService {
     }
   }
 
+  /**
+   * Obtiene todos los votos registrados para un curso.
+   */
   async listForCourse(courseId: string): Promise<Vote[]> {
     try {
       return await this.repo.find({ where: { course: { id: courseId } } });
@@ -39,6 +49,9 @@ export class VotesService {
     }
   }
 
+  /**
+   * Calcula el promedio de calificación para un curso específico.
+   */
   async averageRating(courseId: string): Promise<number> {
     try {
       const result = await this.repo

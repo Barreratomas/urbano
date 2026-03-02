@@ -1,3 +1,7 @@
+/**
+ * Página de Inicio de Sesión.
+ * Gestiona la autenticación de los usuarios en la plataforma.
+ */
 import { useEffect, useState } from 'react';
 import { Loader } from 'react-feather';
 import { useForm } from 'react-hook-form';
@@ -7,6 +11,7 @@ import logo from '../assets/urbano-logo.png';
 import useI18n from '../context/I18nContext';
 import useAuth from '../hooks/useAuth';
 import LoginRequest from '../models/auth/LoginRequest';
+import { getRoutePath } from '../routes';
 import authService from '../services/AuthService';
 
 export default function Login() {
@@ -34,7 +39,7 @@ export default function Login() {
     try {
       const data = await authService.login(loginRequest);
       setAuthenticatedUser(data.user);
-      history.push('/');
+      history.push(getRoutePath('dashboard'));
     } catch (error) {
       if (error.response?.data?.message) {
         setError(error.response.data.message);

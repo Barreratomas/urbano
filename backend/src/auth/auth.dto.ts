@@ -1,3 +1,6 @@
+/**
+ * DTOs para el proceso de autenticación.
+ */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 

@@ -1,3 +1,7 @@
+/**
+ * Controlador de Cursos.
+ * Gestiona las operaciones de los cursos, incluyendo inscripciones, favoritos, votaciones y contenidos asociados.
+ */
 import {
   Body,
   Controller,
@@ -39,12 +43,19 @@ export class CourseController {
     private readonly contentService: ContentService,
   ) {}
 
+  /**
+   * Crea un nuevo curso.
+   * Solo accesible por administradores y editores.
+   */
   @Post()
   @Roles(Role.Admin, Role.Editor)
   async save(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
     return await this.courseService.save(createCourseDto);
   }
 
+  /**
+   * Obtiene todos los cursos con filtros opcionales.
+   */
   @Get()
   async findAll(
     @Query() courseQuery: CourseQuery,
@@ -53,6 +64,9 @@ export class CourseController {
     return await this.courseService.findAll(courseQuery, userId);
   }
 
+  /**
+   * Obtiene los datos del calendario para un rango de fechas.
+   */
   @Get('/calendar')
   async calendar(
     @Query('start') start?: string,
@@ -60,7 +74,7 @@ export class CourseController {
     @User('userId') userId?: string,
   ): Promise<Array<{ date: string; courses: any[] }>> {
     if (!start || !end) {
-      // default to current month
+      // Por defecto al mes actual
       const now = new Date();
       start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       end = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
@@ -68,46 +82,73 @@ export class CourseController {
     return await this.courseService.getCalendarData(start, end, userId);
   }
 
+  /**
+   * Obtiene los cursos favoritos del usuario autenticado.
+   */
   @Get('/favorites')
   async myFavorites(@User('userId') userId: string): Promise<Course[]> {
     return await this.courseService.myFavorites(userId);
   }
 
+  /**
+   * Obtiene los cursos en los que el usuario está inscrito.
+   */
   @Get('/enrolled')
   async myEnrollments(@User('userId') userId: string): Promise<Course[]> {
     return await this.courseService.myEnrollments(userId);
   }
 
+  /**
+   * Obtiene el ranking de cursos mejor valorados.
+   */
   @Get('/ranking')
   async ranking(): Promise<Course[]> {
     return await this.courseService.getRanking();
   }
 
+  /**
+   * Obtiene los detalles de un curso por su ID.
+   */
   @Get('/:id')
   async findOne(@Param('id') id: string, @User('userId') userId?: string): Promise<Course> {
     return await this.courseService.findById(id, userId);
   }
 
+  /**
+   * Marca o desmarca un curso como favorito.
+   */
   @Post('/:id/favorite')
   async toggleFavorite(@Param('id') id: string, @User('userId') userId: string): Promise<void> {
     await this.courseService.toggleFavorite(userId, id);
   }
 
+  /**
+   * Elimina un curso de los favoritos del usuario.
+   */
   @Delete('/:id/favorite')
   async unfavorite(@Param('id') id: string, @User('userId') userId: string): Promise<void> {
     await this.courseService.toggleFavorite(userId, id);
   }
 
+  /**
+   * Inscribe al usuario en un curso.
+   */
   @Post('/:id/enroll')
   async enroll(@Param('id') id: string, @User('userId') userId: string): Promise<void> {
     await this.courseService.enroll(userId, id);
   }
 
+  /**
+   * Da de baja al usuario de un curso.
+   */
   @Delete('/:id/enroll')
   async unenroll(@Param('id') id: string, @User('userId') userId: string): Promise<void> {
     await this.courseService.withdraw(userId, id);
   }
 
+  /**
+   * Registra un voto o valoración para un curso.
+   */
   @Post('/:id/vote')
   async vote(
     @Param('id') id: string,
@@ -117,23 +158,35 @@ export class CourseController {
     await this.courseService.vote(userId, id, value);
   }
 
+  /**
+   * Obtiene la calificación promedio de un curso.
+   */
   @Get('/:id/average-rating')
   async averageRating(@Param('id') id: string): Promise<number> {
     return await this.courseService.getAverageRating(id);
   }
 
+  /**
+   * Actualiza la información de un curso existente.
+   */
   @Put('/:id')
   @Roles(Role.Admin, Role.Editor)
   async update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto): Promise<Course> {
     return await this.courseService.update(id, updateCourseDto);
   }
 
+  /**
+   * Elimina un curso permanentemente.
+   */
   @Delete('/:id')
   @Roles(Role.Admin)
   async delete(@Param('id') id: string): Promise<string> {
     return await this.courseService.delete(id);
   }
 
+  /**
+   * Crea un nuevo contenido asociado a un curso.
+   */
   @Post('/:id/contents')
   @Roles(Role.Admin, Role.Editor)
   @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
@@ -143,12 +196,15 @@ export class CourseController {
     @Body() createContentDto: CreateContentDto,
   ): Promise<Content> {
     if (file) {
-      // store relative URL for client
+      // Almacena la URL relativa para el cliente
       createContentDto.imageUrl = `/uploads/${file.filename}`;
     }
     return await this.contentService.save(id, createContentDto);
   }
 
+  /**
+   * Obtiene todos los contenidos de un curso por su ID.
+   */
   @Get('/:id/contents')
   async findAllContentsByCourseId(
     @Param('id') id: string,
@@ -157,6 +213,9 @@ export class CourseController {
     return await this.contentService.findAllByCourseId(id, contentQuery);
   }
 
+  /**
+   * Actualiza un contenido específico dentro de un curso.
+   */
   @Put('/:id/contents/:contentId')
   @Roles(Role.Admin, Role.Editor)
   @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
@@ -172,6 +231,9 @@ export class CourseController {
     return await this.contentService.update(id, contentId, updateContentDto);
   }
 
+  /**
+   * Elimina un contenido de un curso.
+   */
   @Delete('/:id/contents/:contentId')
   @Roles(Role.Admin)
   async deleteContent(

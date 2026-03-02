@@ -1,3 +1,7 @@
+/**
+ * Configuración de Axios para las peticiones a la API.
+ * Gestiona la URL base, credenciales e interceptores para refresco automático de tokens.
+ */
 import axios from 'axios';
 
 import authService from './AuthService';
@@ -18,8 +22,8 @@ const axiosInstance = axios.create({
  * Resuelve una URL de recurso estático (p. ej. /uploads/xyz) a una URL accesible.
  * - Si la ruta ya es absoluta (http/https), se devuelve tal cual.
  * - Si REACT_APP_API_URL es absoluta (http://host:port/api), se quita el sufijo /api
- *   y se antepone el host a la ruta relativa, resultando en http://host:port/uploads/xyz.
- * - Si la base es relativa (/api), se devuelve la ruta como está (CRA proxy la reenviará en dev).
+ *   y se antepone el host a la ruta relativa.
+ * - Si la base es relativa (/api), se devuelve la ruta como está.
  */
 export const resolveMediaUrl = (path?: string): string => {
   if (!path) return '';
@@ -36,7 +40,7 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-/* Auto refreshes the token if expired */
+// Interceptor de respuesta para manejo de errores y refresco automático de token
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
@@ -47,6 +51,7 @@ axiosInstance.interceptors.response.use(
     const isLogoutRequest = originalRequest.url?.includes('/auth/logout');
     const isRefreshRequest = originalRequest.url?.includes('/auth/refresh');
 
+    // Manejo de cuenta deshabilitada
     if (
       error.response.status === 403 &&
       error.response.data?.message === 'Account is disabled' &&
@@ -63,6 +68,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Manejo de token expirado (401)
     if (error.response.status === 401 && !originalRequest._retry && !isLoginRequest) {
       originalRequest._retry = true;
 
@@ -71,7 +77,6 @@ axiosInstance.interceptors.response.use(
         error.response.config.headers.Authorization = `Bearer ${token}`;
         return axiosInstance(error.response.config);
       } catch (error) {
-        //window.location.href = '/login';
         return Promise.reject(error);
       }
     }

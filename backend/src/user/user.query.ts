@@ -1,3 +1,6 @@
+/**
+ * Parámetros de consulta para el filtrado y paginación de usuarios.
+ */
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';

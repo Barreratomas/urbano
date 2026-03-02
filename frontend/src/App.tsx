@@ -1,23 +1,23 @@
+/**
+ * Componente principal de la aplicación.
+ * Maneja la autenticación inicial y el enrutamiento general.
+ */
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import useAuth from './hooks/useAuth';
-import Calendar from './pages/Calendar';
-import Contact from './pages/Contact';
-import Contents from './pages/Contents';
-import Courses from './pages/Courses';
-import Dashboard from './pages/Dashboard';
-import Favorites from './pages/Favorites';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import Users from './pages/Users';
 import { AuthRoute, PrivateRoute } from './Route';
+import { routes } from './routes';
 import authService from './services/AuthService';
 
 export default function App() {
   const { authenticatedUser, setAuthenticatedUser } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
 
+  /**
+   * Intenta refrescar la sesión del usuario al cargar la aplicación.
+   * Maneja casos de cuentas deshabilitadas forzando el cierre de sesión.
+   */
   const authenticate = async () => {
     try {
       const authResponse = await authService.refresh();
@@ -48,16 +48,30 @@ export default function App() {
   return isLoaded ? (
     <Router>
       <Switch>
-        <PrivateRoute exact path="/" component={Dashboard} />
-        <PrivateRoute exact path="/profile" component={Profile} />
-        <PrivateRoute exact path="/users" component={Users} roles={['admin']} />
-        <PrivateRoute exact path="/courses" component={Courses} />
-        <PrivateRoute exact path="/courses/:id" component={Contents} />
-        <PrivateRoute exact path="/favorites" component={Favorites} />
-        <PrivateRoute exact path="/calendar" component={Calendar} />
-        <PrivateRoute exact path="/contact" component={Contact} />
-
-        <AuthRoute exact path="/login" component={Login} />
+        {routes.map((route, index) => {
+          if (route.isPrivate) {
+            return (
+              <PrivateRoute
+                key={index}
+                exact={route.exact}
+                path={route.path}
+                component={route.component}
+                roles={route.roles}
+              />
+            );
+          }
+          if (route.isAuth) {
+            return (
+              <AuthRoute
+                key={index}
+                exact={route.exact}
+                path={route.path}
+                component={route.component}
+              />
+            );
+          }
+          return null;
+        })}
       </Switch>
     </Router>
   ) : null;

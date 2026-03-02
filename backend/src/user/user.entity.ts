@@ -1,3 +1,6 @@
+/**
+ * Entidad que representa a un usuario en la base de datos.
+ */
 import { Exclude } from 'class-transformer';
 import { Factory } from 'nestjs-seeder';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';

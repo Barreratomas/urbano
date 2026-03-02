@@ -1,3 +1,7 @@
+/**
+ * Panel de Control (Dashboard).
+ * Muestra estadísticas rápidas y los cursos más recientes.
+ */
 import { BookOpen, Calendar, ChevronRight, Layers, Users } from 'react-feather';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -5,6 +9,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/layout';
 import useI18n from '../context/I18nContext';
 import useAuth from '../hooks/useAuth';
+import { getRoutePath } from '../routes';
 import courseService from '../services/CourseService';
 import statsService from '../services/StatsService';
 
@@ -33,7 +38,7 @@ export default function Dashboard() {
       <hr className="mb-8" />
 
       <div className="space-y-10">
-        {/* Stats Section */}
+        {/* Sección de Estadísticas */}
         <section>
           <p className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-6">
             {t('quickStats')}
@@ -93,14 +98,14 @@ export default function Dashboard() {
           )}
         </section>
 
-        {/* Latest Courses Section */}
+        {/* Sección de Cursos Recientes */}
         <section>
           <div className="flex justify-between items-end mb-6">
             <p className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">
               {t('latestCourses')}
             </p>
             <Link
-              to="/courses"
+              to={getRoutePath('courses')}
               className="text-xs font-bold text-urbano-primary hover:underline flex items-center gap-1"
             >
               {t('viewAllCourses')} <ChevronRight size={14} />
@@ -112,7 +117,7 @@ export default function Dashboard() {
               ? latestCourses.map((course) => (
                   <Link
                     key={course.id}
-                    to={`/courses/${course.id}`}
+                    to={getRoutePath('courseDetail', { id: course.id })}
                     className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between transition-all hover:shadow-md hover:border-urbano-primary/20 group"
                   >
                     <div className="flex items-center gap-5">

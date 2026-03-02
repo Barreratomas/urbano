@@ -1,3 +1,6 @@
+/**
+ * DTO para la respuesta de estadísticas globales.
+ */
 import { ApiProperty } from '@nestjs/swagger';
 
 export class StatsResponseDto {
