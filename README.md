@@ -76,6 +76,25 @@ docker exec backend yarn seed:refresh
 
 Las factories generan usuarios (`password123`), cursos y contenidos relacionados de forma automática.
 
+##  CI/CD - Pipeline de Integración Continua
+
+El proyecto utiliza **GitHub Actions** para la integración continua, ejecutando automáticamente validaciones en cada push o pull request a la rama `main`.
+
+### Workflows de CI
+
+- **Backend CI**: Valida el código del backend con las siguientes etapas:
+  - Instalación de dependencias con Yarn
+  - Análisis de código con ESLint
+  - Ejecución de pruebas unitarias con Jest
+  - Verificación de compilación
+
+- **Frontend CI**: Valida el código del frontend con:
+  - Instalación de dependencias con NPM
+  - Ejecución de pruebas unitarias
+  - Verificación de compilación de producción
+
+Los archivos de configuración del CI se encuentran en `.github/workflows/`.
+
 ##  QA y Testing
 
 Se han implementado pruebas unitarias para asegurar la integridad de los servicios críticos del backend.
