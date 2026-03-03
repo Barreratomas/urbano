@@ -80,6 +80,10 @@ Las factories generan usuarios (`password123`), cursos y contenidos relacionados
 
 El proyecto utiliza **GitHub Actions** para la integración continua, ejecutando automáticamente validaciones en cada push o pull request a la rama `main`.
 
+**Nota sobre despliegue continuo (CD)**  
+El flujo actual solo cubre la parte de CI (lint, tests, compilación).  
+Se planeó también publicar imágenes en Docker Hub y ejecutar un despliegue automático tras cada push, pero dicha etapa de CD no se llegó a implementar.
+
 ### Workflows de CI
 
 - **Backend CI**: Valida el código del backend con las siguientes etapas:
